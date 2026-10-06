@@ -1,0 +1,347 @@
+/*
+ * Login and Register forms. The frame around them (gradient panel, tab, logo,
+ * wordmark) is AuthLayout's; this file is only the fields and the button.
+ *
+ * Fields are underline-style: no box, a hairline underneath, a small leading
+ * icon and the label carried by the placeholder (the real <label> is kept for
+ * screen readers). Focus draws a primary line out from the centre.
+ */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+/* ── Fields ──────────────────────────────────────────────────────────── */
+
+.field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-placeholder);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+/* The focus line: grows from the centre over the hairline. */
+.field::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: var(--primary);
+  border-radius: var(--radius-pill);
+  transform: scaleX(0);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.field:hover {
+  border-color: var(--text-faint);
+}
+
+.field:focus-within {
+  color: var(--primary);
+}
+
+.field:focus-within::after {
+  transform: scaleX(1);
+}
+
+/* NavIcon draws at 24px; the fields want a small, quiet glyph. */
+.field-icon {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+
+.field input,
+.field textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--text);
+  font-size: var(--text-body);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+/* The line underneath is the focus indicator; the global outline would box
+   an input that is meant to have no box. */
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+}
+
+/* Keep Chrome's autofill wash off the white panel. */
+.field input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  -webkit-text-fill-color: var(--text);
+}
+
+.field-textarea {
+  align-items: flex-start;
+}
+
+.field-textarea .field-icon {
+  margin-top: 14px;
+}
+
+.field textarea {
+  padding-block: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* Show / hide password. */
+.field-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  margin-right: -6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--text-placeholder);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.field-toggle:hover {
+  color: var(--primary);
+  background-color: var(--badge-purple-bg);
+}
+
+.field-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+}
+
+.field-toggle .nav-icon {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+
+/* A visible label inside the field, for the inputs a placeholder can't
+   describe (a date, a file). */
+.field-inline-label {
+  flex: 0 0 auto;
+  color: var(--text-placeholder);
+  font-size: var(--text-body);
+}
+
+.field input[type="date"] {
+  text-align: right;
+}
+
+/* Chrome draws an empty date field's mm/dd/yyyy in the text colour, so it
+   looks filled in. The field is required, so :invalid means empty. */
+.field input[type="date"]:invalid {
+  color: var(--text-placeholder);
+}
+
+.field input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+/* The file input keeps the browser's own control, as a small pill. */
+.field input[type="file"] {
+  min-height: 0;
+  color: var(--text-muted);
+  font-size: var(--text-meta);
+  text-align: right;
+}
+
+.field input[type="file"]::file-selector-button {
+  margin-right: var(--space-2);
+  padding: 6px 14px;
+  background-color: var(--badge-purple-bg);
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--badge-purple-fg);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.field input[type="file"]::file-selector-button:hover {
+  background-color: color-mix(in srgb, var(--primary) 18%, var(--surface));
+}
+
+/* A field and the hint under it. */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-meta);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* The hint turns red as soon as what is typed breaks the rule it states. */
+.hint-invalid {
+  color: var(--error);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.optional {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: var(--space-1);
+}
+
+.section-label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── Error ───────────────────────────────────────────────────────────── */
+
+/* Messages come from the backend in lower case ("invalid email or password"). */
+.error {
+  margin: 0;
+  padding: 10px 14px;
+  background-color: var(--danger-wash);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--danger-text-on-wash);
+}
+
+.error::first-letter {
+  text-transform: uppercase;
+}
+
+/* ── Notice ──────────────────────────────────────────────────────────── */
+
+/* Why the page is showing, rather than what went wrong with an attempt: the
+   session ended somewhere else. Deliberately not the danger colours -- nothing
+   failed, and nothing the person types will fix it. It shares the error's
+   shape and its reveal transition so the form still reads as one thing.
+   Written as a full sentence, so no ::first-letter fix-up. */
+.notice {
+  margin: 0;
+  padding: 10px 14px;
+  background-color: var(--badge-purple-bg);
+  border: 1px solid color-mix(in srgb, var(--badge-purple-fg) 22%, transparent);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--badge-purple-fg);
+}
+
+.error-reveal-enter-active,
+.error-reveal-leave-active {
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.error-reveal-enter-from,
+.error-reveal-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ── Call to action ──────────────────────────────────────────────────── */
+
+.primary-button {
+  min-height: 56px;
+  margin-top: 16px;
+  padding: 0 var(--space-5);
+  background-color: var(--primary);
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-primary);
+  color: var(--surface);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.primary-button:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-primary-lift);
+  transform: translateY(-2px);
+}
+
+.primary-button:active:not(:disabled) {
+  box-shadow: var(--shadow-primary);
+  transform: translateY(0);
+  transition-duration: 80ms;
+}
+
+.primary-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* Disabled only while the request is in flight. */
+.primary-button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+@media (max-width: 30rem) {
+  .field-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field,
+  .field::after,
+  .field-toggle,
+  .primary-button,
+  .error-reveal-enter-active,
+  .error-reveal-leave-active {
+    transition-duration: 1ms;
+  }
+
+  .primary-button:hover:not(:disabled) {
+    transform: none;
+  }
+}

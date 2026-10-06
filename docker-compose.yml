@@ -1,0 +1,82 @@
+# Two containers: the Go API and an nginx serving the built SPA and proxying
+# to it. `docker compose up --build` brings the whole app up on
+# http://localhost:3000, with the API also reachable directly on :3001.
+#
+# The published ports deliberately avoid 5173 and 8080, so the stack can run
+# alongside `npm run dev` and a local `go run .` without either fighting the
+# other for a port.
+
+services:
+  backend:
+    build: ./backend
+    image: social-network-backend
+    container_name: social-network-backend
+
+    environment:
+      # The origin browsers actually load the app from, which is the
+      # frontend container's published port. pkg/middleware reads it for the
+      # CORS header and pkg/websocket for the handshake's CheckOrigin, so
+      # this one value has to match the address in the address bar.
+      #
+      # Same-origin requests send no Origin header and never preflight, so
+      # in practice nothing in normal use depends on it -- it is the guard
+      # for anything that does arrive cross-origin, and the WebSocket, which
+      # always sends one.
+      ALLOWED_ORIGIN: http://localhost:3000
+
+      # Both under the volume below. Defaulted the same way in the
+      # Dockerfile; repeated here because this is where someone looks to
+      # find out where the data lives.
+      DB_PATH: /app/data/social_network.db
+      UPLOADS_DIR: /app/data/uploads
+
+    volumes:
+      # The database and every uploaded avatar and image. Named rather than
+      # a bind mount so it is not tied to a path on the host, and so it
+      # survives `docker compose down`.
+      - backend-data:/app/data
+
+    ports:
+      # Published as well as reachable from the frontend container: the
+      # brief calls for the API to be usable by external clients directly,
+      # not only through the SPA.
+      - "3001:8080"
+
+    healthcheck:
+      # /api/session answers without a session, which makes it the closest
+      # thing to a readiness probe the API has. wget is busybox's, already
+      # in the alpine runtime image.
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8080/api/session"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Empty on purpose: it makes the bundle request /api, /uploads and
+        # /ws relative to its own origin, which nginx then proxies to
+        # backend:8080. See frontend/nginx.conf.
+        VITE_API_BASE_URL: ""
+    image: social-network-frontend
+    container_name: social-network-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      backend:
+        # Not just `depends_on: [backend]`. nginx resolves the names in
+        # proxy_pass once, at startup, and exits with "host not found in
+        # upstream" if the backend is not up yet -- so waiting for the
+        # container to exist is not enough, it has to be answering.
+        condition: service_healthy
+
+    restart: unless-stopped
+
+volumes:
+  backend-data:

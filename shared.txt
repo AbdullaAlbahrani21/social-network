@@ -1,0 +1,104 @@
+SHARED FILES — SOCIAL NETWORK PROJECT
+======================================
+These are files more than one person touches, imports, or depends on.
+Coordinate in the group chat before changing any of these solo.
+
+
+BACKEND (Go)
+------------
+
+backend/go.mod
+    Module definition and dependency list. Adding any new package
+    requires editing this file.
+
+backend/server.go
+    Wires every package's RegisterRoutes() together. Should barely
+    change once initial setup is done — new routes go in each
+    person's own package, not here.
+    
+backend/pkg/response/response.go
+    Shared JSON response helpers (JSON, Error). Every handler in
+    every package imports this so error/success shapes stay
+    consistent.
+
+backend/pkg/middleware/auth.go
+    Session-check middleware. Any route requiring a logged-in user
+    gets wrapped with this.
+
+backend/pkg/db/sqlite/sqlite.go
+    Database connection and migration runner. Used indirectly by
+    everyone via server.go.
+
+backend/pkg/db/migrations/migrations.go
+    Embeds the .sql migration files into the compiled binary.
+
+backend/pkg/db/migrations/sqlite/*.up.sql
+backend/pkg/db/migrations/sqlite/*.down.sql
+    The full database schema (28 files, 14 tables). Each table
+    "belongs" to whichever feature uses it, but changing a table's
+    columns can break another package's queries, so schema edits
+    should be flagged to the team first.
+
+backend/pkg/notifications/notifications.go
+    Owned by Member 4, but the Create() function inside it is
+    called directly from Member 1's and Member 3's code (follow
+    requests, group invites, join requests, event creation). Treat
+    its function signature as a shared contract — don't change it
+    without telling the other three.
+
+
+FRONTEND (Vue)
+--------------
+
+frontend/src/main.js
+    App entry point. Registers the router and Pinia.
+
+frontend/src/App.vue
+    Nav bar plus the <RouterView> shell every page renders inside.
+
+frontend/src/router/index.js
+    Route definitions for every page. Adding a new page means
+    adding a route here.
+
+frontend/src/api.js
+    Shared fetch wrapper. Every page's backend requests go through
+    this.
+
+frontend/src/ws.js
+    Shared websocket connection, used by both the chat and
+    notifications pages.
+
+frontend/src/stores/auth.js
+    Pinia store holding the logged-in user. Read by the nav bar and
+    any page that needs to know who's logged in.
+
+frontend/package.json
+    Dependency list. Adding any npm package means editing this.
+
+frontend/vite.config.js
+    Build configuration.
+
+
+DEPLOYMENT
+----------
+
+frontend/Dockerfile
+frontend/nginx.conf
+frontend/.env.example
+    Frontend container build and serving config.
+
+backend/Dockerfile
+    NOT YET BUILT. The project requires two Docker images (backend
+    + frontend); only the frontend one exists so far.
+
+
+DOCS
+----
+
+backend/STRUCTURE.md
+    Explains the backend folder layout and how routes are wired.
+
+backend/pkg/db/SCHEMA.md
+    Explains the database schema and the design decisions behind
+    it (privacy model, group invites vs. membership, generic
+    notifications).

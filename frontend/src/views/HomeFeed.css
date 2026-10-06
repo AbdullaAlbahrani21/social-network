@@ -1,0 +1,93 @@
+.home-feed {
+  max-width: 42.5rem;
+  margin: 0 auto;
+  padding-block: 40px var(--space-7);
+}
+
+.feed-title {
+  margin: 0 0 20px;
+}
+
+.feed-search {
+  margin-bottom: 20px;
+}
+
+.feed-message {
+  margin-top: var(--space-4);
+}
+
+/* A stack of separate cards. */
+.posts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── List motion ─────────────────────────────────────────────────────── */
+
+/* Scoped under .posts so these outrank .post-list-move below, which sets a
+   transition of its own at the same specificity and, being later, would
+   otherwise replace the shorthand and drop opacity from the list -- a
+   deleted card would slide but blink out.
+   It does not bite here today: @before-leave pins the leaving card with an
+   explicit top before the move pass, so its position never changes and Vue
+   gives it no move class. That is a property of how this list is built, not
+   of the rules, so the rules are written not to depend on it. */
+.posts > .post-list-enter-active {
+  transition:
+    opacity 360ms var(--ease-out),
+    transform 360ms var(--ease-out);
+  transition-delay: calc(var(--stagger, 0) * 45ms);
+}
+
+.post-list-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.posts > .post-list-leave-active {
+  position: absolute;
+  right: 0;
+  left: 0;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.post-list-leave-to {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.post-list-move {
+  transition: transform 320ms var(--ease-out);
+}
+
+@media (max-width: 47.99rem) {
+  .home-feed {
+    padding: 20px 16px 40px;
+  }
+
+  .feed-title {
+    margin-bottom: 16px;
+  }
+
+  .posts {
+    gap: 12px;
+  }
+}
+
+/* Scoped to match the rules above: a media query adds no specificity, so the
+   bare class would no longer outrank them. */
+@media (prefers-reduced-motion: reduce) {
+  .posts > .post-list-enter-active,
+  .posts > .post-list-leave-active,
+  .post-list-move {
+    transition-duration: 1ms;
+    transition-delay: 0ms;
+  }
+}

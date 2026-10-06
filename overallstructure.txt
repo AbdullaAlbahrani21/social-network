@@ -1,0 +1,17 @@
+users ──┬── sessions (1:many, auth tokens)
+        ├── followers (self-referencing: follower_id → users, following_id → users)
+        ├── groups (creator_id → users)
+        ├── group_members (many:many via join table)
+        ├── posts (user_id → users, optional group_id → groups)
+        ├── comments (post_id → posts, user_id → users)
+        ├── messages (sender_id/receiver_id → users)
+        └── notifications (user_id = recipient, actor_id = who triggered it)
+
+groups ──┬── group_members
+         ├── group_invitations (pending invites/join requests)
+         ├── posts (group_id, when it's a group post)
+         ├── events ── event_responses (going/not_going per user)
+         └── group_messages (group chat room)
+
+posts ──┬── comments
+        └── post_visibility (only used when privacy = 'private', lists which followers can see it)

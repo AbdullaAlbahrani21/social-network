@@ -1,0 +1,97 @@
+/*
+ * Form controls and inline messages for the logged-in pages (the feed and
+ * the post detail page so far). Include it in a component with
+ * <style scoped src="../styles/controls.css"></style> and use the classes.
+ */
+.text-input,
+.select-input {
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+
+.text-input {
+  width: 100%;
+}
+
+textarea.text-input {
+  resize: vertical;
+}
+
+.text-input::placeholder {
+  color: var(--text-muted);
+}
+
+.text-input:focus-visible,
+.select-input:focus-visible {
+  border-color: var(--primary);
+  outline: 1px solid var(--primary);
+  outline-offset: 0;
+}
+
+.file-input {
+  max-width: 100%;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.file-input::file-selector-button {
+  margin-right: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.file-input::file-selector-button:hover {
+  border-color: var(--text-muted);
+}
+
+/* The form's own action. Outlined, so the navigation's solid + stays the one
+   strong element on the screen. */
+.outline-button {
+  min-height: 2.75rem;
+  padding: 0 var(--space-5);
+  background-color: var(--surface);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.outline-button:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--primary) 10%, var(--surface));
+}
+
+.outline-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Messages from the API arrive in lower case ("post not found"). */
+.error {
+  margin: 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--error);
+  color: var(--error);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.error::first-letter {
+  text-transform: uppercase;
+}
+
+.status {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}

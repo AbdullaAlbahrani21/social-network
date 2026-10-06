@@ -1,0 +1,107 @@
+/*
+ * Design tokens: the one place colours, spacing, radii and type sizes are
+ * defined. Pages and components use these variables instead of raw values,
+ * so a palette or scale change happens here and nowhere else.
+ *
+ * Values are the exact ones from the approved Claude Design mockup set.
+ */
+:root {
+  /* Colour: brand */
+  --primary: #6c67bb;
+  --primary-hover: #5d57a8;
+  --logo-gradient: linear-gradient(135deg, #9146f4, #7a50e0);     /* lightning-bolt mark only */
+  --wordmark-gradient: linear-gradient(90deg, #c96c9d, #8169ae);  /* "Social Network" text fill only */
+  /* Hero banners, header bands, avatar rings, side-panel accents. Always
+     layered with soft white blob shapes at 8-16% opacity for depth. */
+  --panel-gradient: linear-gradient(135deg, #7d6ebf, #9c68b3, #cc68b0);
+
+  /* Colour: surfaces and text */
+  --surface: #ffffff;
+  --bg: #f6f5fa;
+  --text: #2e2a3d;
+  --text-muted: #6b6480;
+  --text-placeholder: #a8a8ac;
+  --text-faint: #c9c5e6;
+  --border: #eceaf2;
+  --border-hairline: #f0eef6;
+
+  /*
+   * The edge of a form control. --border is right for dividers and cards but
+   * too faint to show where an input is; mixed toward --text-muted it reaches
+   * the 3:1 a control's boundary needs.
+   */
+  --border-strong: color-mix(in srgb, var(--text-muted) 70%, var(--border));
+
+  /* Colour: danger */
+  --danger: #c2577b;
+  --danger-hover: #a8496a;
+  --danger-wash: #fdf1f4;
+  --danger-wash-alt: #fbeef3;
+  --danger-border: #f6dbe2;
+  --danger-text-on-wash: #8a4a5a;
+
+  /* Colour: badge rotation (background / foreground pairs) */
+  --badge-purple-bg: #ece9fb;
+  --badge-purple-fg: #6c67bb;
+  --badge-pink-bg: #f6e3ee;
+  --badge-pink-fg: #a24a78;
+  --badge-muted-bg: #eef0fb;
+  --badge-muted-fg: #6b6480;
+
+  --notification-dot: #e8567b;
+
+  /* Older names still read by pages that haven't had their design pass.
+     They point at the new palette so nothing renders in the old colours. */
+  --error: var(--danger);
+  --accent: var(--notification-dot); /* unread badges, live/pending indicators only */
+  --success: #2f9e68;
+
+  /* Spacing. Soft in-between values (14/18/20/22/26/28/30/34/40/56px) are
+     fine inline for card padding and section gaps. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Radius */
+  --radius-xs: 8px;     /* small controls, focus outlines */
+  --radius-sm: 18px;    /* inputs, segmented toggles, primary buttons */
+  --radius-md: 22px;    /* standard cards */
+  --radius-lg: 28px;    /* hero banners, page headers, side panels, app shell */
+  --radius-pill: 999px; /* buttons, chips, badges, avatar rings */
+
+  /* Shadow: tinted with the primary rather than a generic grey. */
+  --shadow-primary: 0 10px 24px -8px color-mix(in srgb, var(--primary) 55%, transparent);
+  --shadow-primary-lift: 0 16px 30px -10px color-mix(in srgb, var(--primary) 65%, transparent);
+  --shadow-card: 0 8px 28px -12px color-mix(in srgb, var(--primary) 22%, transparent);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 160ms;
+  --duration-base: 260ms;
+
+  /* Type: Poppins for display (wordmark, page and section headings, card
+     titles); the Manrope/system stack for everything else. */
+  --font-display: "Poppins", "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --text-wordmark: 2.5rem;     /* 40px, 44px line-height */
+  --text-h1: 2rem;             /* 32px: page titles (30-34) */
+  --text-h2: 1.25rem;          /* 20px: section headings (18-22) */
+  --text-card-title: 1rem;     /* 16px: card titles (15.5-16) */
+  --text-body: 0.9375rem;      /* 15px: body copy (14-15) */
+  --text-label: 0.8125rem;     /* 13px: labels, button text, 700 (12.5-14) */
+  --text-meta: 0.8125rem;      /* 13px: meta, timestamps (12-13) */
+
+  /* The older size scale, still read by pages. */
+  --text-sm: 0.875rem;  /* 14px: labels, helper text, errors */
+  --text-base: 1rem;    /* 16px: inputs */
+  --text-lg: 1.25rem;   /* 20px */
+  --text-xl: 1.5rem;    /* 24px */
+  --text-2xl: 1.875rem; /* 30px */
+}

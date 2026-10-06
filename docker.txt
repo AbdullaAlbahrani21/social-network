@@ -1,0 +1,12 @@
+build the image:-
+docker-compose up --build
+ 
+
+
+ the backend:-
+ port 3001
+ http://localhost:3001
+
+ frontend:-
+ port 3000
+ http://localhost:3000
